@@ -10,11 +10,14 @@ export interface SubscriptionData {
   subscription_end: string | null;
 }
 
+// Vermietify Stripe Price IDs
 export const PLANS = {
   free: {
-    name: 'Free',
+    name: 'Starter',
     price_monthly: 0,
     price_yearly: 0,
+    price_id_monthly: 'price_1Sr55p52lqSgjCzeX6tlI5tv',
+    price_id_yearly: 'price_1Sr55p52lqSgjCzeX6tlI5tv',
     features: [
       'Bis zu 1 Gebäude',
       'Bis zu 3 Einheiten',
@@ -26,9 +29,8 @@ export const PLANS = {
     name: 'Basic',
     price_monthly: 9.99,
     price_yearly: 95.90,
-    price_id_monthly: 'price_1SwKPf52lqSgjCzel2uP15K4',
-    price_id_yearly: 'price_1SwKPf52lqSgjCzel2uP15K4', // Use monthly for now
-    product_id: 'prod_Tu8hD91ohLphf6',
+    price_id_monthly: 'price_1Sr56K52lqSgjCzeqfCfOudX',
+    price_id_yearly: 'price_1Sr56K52lqSgjCzeqfCfOudX',
     features: [
       'Bis zu 5 Gebäude',
       'Bis zu 20 Einheiten',
@@ -42,9 +44,8 @@ export const PLANS = {
     name: 'Pro',
     price_monthly: 24.99,
     price_yearly: 239.90,
-    price_id_monthly: 'price_1SwKQt52lqSgjCzep01CJAjm',
-    price_id_yearly: 'price_1SwKQt52lqSgjCzep01CJAjm', // Use monthly for now
-    product_id: 'prod_Tu8iRxcAtXiVZh',
+    price_id_monthly: 'price_1Sr56o52lqSgjCzeRuGrant2',
+    price_id_yearly: 'price_1Sr56o52lqSgjCzeRuGrant2',
     features: [
       'Unbegrenzte Gebäude',
       'Unbegrenzte Einheiten',
@@ -57,12 +58,11 @@ export const PLANS = {
     ],
   },
   profi: {
-    name: 'Profi',
+    name: 'Enterprise',
     price_monthly: 79,
     price_yearly: 790,
-    price_id_monthly: 'price_1Sv6Yu52lqSgjCzeyxqOwVDY',
-    price_id_yearly: 'price_1Sv6Yu52lqSgjCzeF2OJ0B6q',
-    product_id: 'prod_TssJgIeaLhjZLD',
+    price_id_monthly: 'price_1Sr57E52lqSgjCze3iHixnBn',
+    price_id_yearly: 'price_1Sr57E52lqSgjCze3iHixnBn',
     features: [
       'Alle Pro-Features',
       'Multi-User Zugang',
