@@ -95,6 +95,63 @@ export type Database = {
           },
         ]
       }
+      documents: {
+        Row: {
+          building_id: string | null
+          content_json: Json | null
+          created_at: string | null
+          document_type: string | null
+          file_size: number | null
+          file_url: string | null
+          id: string
+          title: string
+          unit_id: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          building_id?: string | null
+          content_json?: Json | null
+          created_at?: string | null
+          document_type?: string | null
+          file_size?: number | null
+          file_url?: string | null
+          id?: string
+          title: string
+          unit_id?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          building_id?: string | null
+          content_json?: Json | null
+          created_at?: string | null
+          document_type?: string | null
+          file_size?: number | null
+          file_url?: string | null
+          id?: string
+          title?: string
+          unit_id?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documents_building_id_fkey"
+            columns: ["building_id"]
+            isOneToOne: false
+            referencedRelation: "buildings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documents_unit_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "units"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       leases: {
         Row: {
           created_at: string
@@ -153,35 +210,93 @@ export type Database = {
           },
         ]
       }
+      messages: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          is_read: boolean | null
+          read_at: string | null
+          recipient_id: string
+          sender_id: string
+          subject: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          read_at?: string | null
+          recipient_id: string
+          sender_id: string
+          subject?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          read_at?: string | null
+          recipient_id?: string
+          sender_id?: string
+          subject?: string | null
+        }
+        Relationships: []
+      }
       meter_readings: {
         Row: {
+          confidence: number | null
           consumption: number | null
           created_at: string
           id: string
+          image_url: string | null
+          is_verified: boolean | null
+          meter_id: string | null
           operating_cost_id: string
           reading_end: number
           reading_start: number
+          source: string | null
+          submitted_by: string | null
           unit_id: string
         }
         Insert: {
+          confidence?: number | null
           consumption?: number | null
           created_at?: string
           id?: string
+          image_url?: string | null
+          is_verified?: boolean | null
+          meter_id?: string | null
           operating_cost_id: string
           reading_end?: number
           reading_start?: number
+          source?: string | null
+          submitted_by?: string | null
           unit_id: string
         }
         Update: {
+          confidence?: number | null
           consumption?: number | null
           created_at?: string
           id?: string
+          image_url?: string | null
+          is_verified?: boolean | null
+          meter_id?: string | null
           operating_cost_id?: string
           reading_end?: number
           reading_start?: number
+          source?: string | null
+          submitted_by?: string | null
           unit_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "meter_readings_meter_id_fkey"
+            columns: ["meter_id"]
+            isOneToOne: false
+            referencedRelation: "meters"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "meter_readings_operating_cost_id_fkey"
             columns: ["operating_cost_id"]
@@ -191,6 +306,44 @@ export type Database = {
           },
           {
             foreignKeyName: "meter_readings_unit_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "units"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      meters: {
+        Row: {
+          created_at: string | null
+          id: string
+          installation_date: string | null
+          meter_number: string
+          meter_type: Database["public"]["Enums"]["meter_type"]
+          unit_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          installation_date?: string | null
+          meter_number: string
+          meter_type: Database["public"]["Enums"]["meter_type"]
+          unit_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          installation_date?: string | null
+          meter_number?: string
+          meter_type?: Database["public"]["Enums"]["meter_type"]
+          unit_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "meters_unit_id_fkey"
             columns: ["unit_id"]
             isOneToOne: false
             referencedRelation: "units"
@@ -340,38 +493,151 @@ export type Database = {
           },
         ]
       }
+      organizations: {
+        Row: {
+          created_at: string | null
+          id: string
+          name: string
+          stripe_customer_id: string | null
+          subscription_plan: string | null
+          type: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          name: string
+          stripe_customer_id?: string | null
+          subscription_plan?: string | null
+          type?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          name?: string
+          stripe_customer_id?: string | null
+          subscription_plan?: string | null
+          type?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           address: string | null
+          avatar_url: string | null
           company_name: string | null
           created_at: string
           email: string | null
+          full_name: string | null
           id: string
+          organization_id: string | null
           phone: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
           address?: string | null
+          avatar_url?: string | null
           company_name?: string | null
           created_at?: string
           email?: string | null
+          full_name?: string | null
           id?: string
+          organization_id?: string | null
           phone?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
           address?: string | null
+          avatar_url?: string | null
           company_name?: string | null
           created_at?: string
           email?: string | null
+          full_name?: string | null
           id?: string
+          organization_id?: string | null
           phone?: string | null
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tasks: {
+        Row: {
+          assigned_to: string | null
+          building_id: string | null
+          category: Database["public"]["Enums"]["task_category"] | null
+          completed_at: string | null
+          created_at: string | null
+          created_by: string
+          description: string | null
+          due_date: string | null
+          id: string
+          priority: Database["public"]["Enums"]["task_priority"] | null
+          status: Database["public"]["Enums"]["task_status"] | null
+          title: string
+          unit_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          assigned_to?: string | null
+          building_id?: string | null
+          category?: Database["public"]["Enums"]["task_category"] | null
+          completed_at?: string | null
+          created_at?: string | null
+          created_by: string
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          priority?: Database["public"]["Enums"]["task_priority"] | null
+          status?: Database["public"]["Enums"]["task_status"] | null
+          title: string
+          unit_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          assigned_to?: string | null
+          building_id?: string | null
+          category?: Database["public"]["Enums"]["task_category"] | null
+          completed_at?: string | null
+          created_at?: string | null
+          created_by?: string
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          priority?: Database["public"]["Enums"]["task_priority"] | null
+          status?: Database["public"]["Enums"]["task_status"] | null
+          title?: string
+          unit_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tasks_building_id_fkey"
+            columns: ["building_id"]
+            isOneToOne: false
+            referencedRelation: "buildings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tasks_unit_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "units"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       tenants: {
         Row: {
@@ -525,6 +791,7 @@ export type Database = {
         }[]
       }
       get_unit_owner: { Args: { unit_id: string }; Returns: string }
+      get_user_organization: { Args: { user_id: string }; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -532,10 +799,14 @@ export type Database = {
         }
         Returns: boolean
       }
+      same_organization: {
+        Args: { user_id_a: string; user_id_b: string }
+        Returns: boolean
+      }
     }
     Enums: {
       allocation_key: "area" | "persons" | "units" | "consumption" | "direct"
-      app_role: "admin" | "user"
+      app_role: "admin" | "user" | "vermieter" | "mieter" | "hausmeister"
       cost_type:
         | "public_charges"
         | "water_supply"
@@ -554,7 +825,11 @@ export type Database = {
         | "laundry_facilities"
         | "other_operating_costs"
         | "reserve"
+      meter_type: "electricity" | "gas" | "water_cold" | "water_hot" | "heating"
       operating_cost_status: "draft" | "calculated" | "sent" | "completed"
+      task_category: "repair" | "maintenance" | "inspection" | "other"
+      task_priority: "low" | "medium" | "high" | "urgent"
+      task_status: "open" | "in_progress" | "completed" | "cancelled"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -683,7 +958,7 @@ export const Constants = {
   public: {
     Enums: {
       allocation_key: ["area", "persons", "units", "consumption", "direct"],
-      app_role: ["admin", "user"],
+      app_role: ["admin", "user", "vermieter", "mieter", "hausmeister"],
       cost_type: [
         "public_charges",
         "water_supply",
@@ -703,7 +978,11 @@ export const Constants = {
         "other_operating_costs",
         "reserve",
       ],
+      meter_type: ["electricity", "gas", "water_cold", "water_hot", "heating"],
       operating_cost_status: ["draft", "calculated", "sent", "completed"],
+      task_category: ["repair", "maintenance", "inspection", "other"],
+      task_priority: ["low", "medium", "high", "urgent"],
+      task_status: ["open", "in_progress", "completed", "cancelled"],
     },
   },
 } as const
