@@ -12,6 +12,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useToast } from '@/hooks/use-toast';
 import { Plus, Pencil, Trash2, Building2, Loader2, Home } from 'lucide-react';
 import type { Building } from '@/types/database';
+import { buildingSchema, formatValidationErrors } from '@/lib/validations';
 
 export default function BuildingsPage() {
   const { user } = useAuth();
@@ -72,15 +73,37 @@ export default function BuildingsPage() {
 
   const handleSave = async () => {
     if (!user) return;
+    
+    // Validate form data using the building schema
+    const validationData = {
+      name: formData.name.trim(),
+      street: formData.street.trim(),
+      house_number: formData.house_number.trim(),
+      postal_code: formData.postal_code.trim(),
+      city: formData.city.trim(),
+      total_area: parseFloat(formData.total_area) || 0,
+    };
+
+    const validation = buildingSchema.safeParse(validationData);
+    
+    if (!validation.success) {
+      toast({ 
+        title: 'Validierungsfehler', 
+        description: formatValidationErrors(validation.error), 
+        variant: 'destructive' 
+      });
+      return;
+    }
+
     setSaving(true);
 
     const buildingData = {
-      name: formData.name,
-      street: formData.street,
-      house_number: formData.house_number,
-      postal_code: formData.postal_code,
-      city: formData.city,
-      total_area: parseFloat(formData.total_area) || 0,
+      name: validation.data.name,
+      street: validation.data.street,
+      house_number: validation.data.house_number,
+      postal_code: validation.data.postal_code,
+      city: validation.data.city,
+      total_area: validation.data.total_area,
       user_id: user.id,
     };
 
