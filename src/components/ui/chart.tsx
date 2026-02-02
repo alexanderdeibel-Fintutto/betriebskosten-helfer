@@ -74,34 +74,69 @@ const sanitizeCssIdentifier = (key: string): string => {
 const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
   const colorConfig = Object.entries(config).filter(([_, config]) => config.theme || config.color);
 
-  if (!colorConfig.length) {
-    return null;
-  }
+  // Use useLayoutEffect to safely set CSS custom properties without dangerouslySetInnerHTML
+  React.useLayoutEffect(() => {
+    if (!colorConfig.length) return;
 
-  return (
-    <style
-      dangerouslySetInnerHTML={{
-        __html: Object.entries(THEMES)
-          .map(
-            ([theme, prefix]) => `
-${prefix} [data-chart=${id}] {
-${colorConfig
-  .map(([key, itemConfig]) => {
-    const color = itemConfig.theme?.[theme as keyof typeof itemConfig.theme] || itemConfig.color;
-    // Validate color before injection
-    if (!color || !isValidCssColor(color)) return null;
-    const safeKey = sanitizeCssIdentifier(key);
-    return `  --color-${safeKey}: ${color};`;
-  })
-  .filter(Boolean)
-  .join("\n")}
-}
-`,
-          )
-          .join("\n"),
-      }}
-    />
-  );
+    const chartElement = document.querySelector(`[data-chart="${id}"]`);
+    if (!chartElement || !(chartElement instanceof HTMLElement)) return;
+
+    // Set CSS custom properties directly on the element
+    colorConfig.forEach(([key, itemConfig]) => {
+      // For light theme (default), use the color or theme light value
+      const lightColor = itemConfig.theme?.light || itemConfig.color;
+      if (lightColor && isValidCssColor(lightColor)) {
+        const safeKey = sanitizeCssIdentifier(key);
+        chartElement.style.setProperty(`--color-${safeKey}`, lightColor);
+      }
+    });
+
+    // Cleanup function to remove properties when component unmounts
+    return () => {
+      colorConfig.forEach(([key]) => {
+        const safeKey = sanitizeCssIdentifier(key);
+        if (chartElement instanceof HTMLElement) {
+          chartElement.style.removeProperty(`--color-${safeKey}`);
+        }
+      });
+    };
+  }, [id, colorConfig]);
+
+  // Handle dark theme via a separate effect with MutationObserver
+  React.useLayoutEffect(() => {
+    if (!colorConfig.length) return;
+
+    const updateDarkTheme = () => {
+      const isDark = document.documentElement.classList.contains('dark');
+      const chartElement = document.querySelector(`[data-chart="${id}"]`);
+      if (!chartElement || !(chartElement instanceof HTMLElement)) return;
+
+      colorConfig.forEach(([key, itemConfig]) => {
+        if (itemConfig.theme) {
+          const color = isDark ? itemConfig.theme.dark : itemConfig.theme.light;
+          if (color && isValidCssColor(color)) {
+            const safeKey = sanitizeCssIdentifier(key);
+            chartElement.style.setProperty(`--color-${safeKey}`, color);
+          }
+        }
+      });
+    };
+
+    // Initial update
+    updateDarkTheme();
+
+    // Watch for theme changes
+    const observer = new MutationObserver(updateDarkTheme);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
+
+    return () => observer.disconnect();
+  }, [id, colorConfig]);
+
+  // Return null - no style tag needed, CSS properties are set directly
+  return null;
 };
 
 const ChartTooltip = RechartsPrimitive.Tooltip;
