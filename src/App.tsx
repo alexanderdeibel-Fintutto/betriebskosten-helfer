@@ -19,6 +19,8 @@ import LeasesPage from "./pages/LeasesPage";
 import BillingsPage from "./pages/BillingsPage";
 import NewBillingPage from "./pages/NewBillingPage";
 import SettingsPage from "./pages/SettingsPage";
+import PricingPage from "./pages/PricingPage";
+import SuccessPage from "./pages/SuccessPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -67,6 +69,8 @@ function AppRoutes() {
       <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
       <Route path="/register" element={<PublicRoute><RegisterPage /></PublicRoute>} />
       <Route path="/forgot-password" element={<PublicRoute><ForgotPasswordPage /></PublicRoute>} />
+      <Route path="/pricing" element={<PricingPage />} />
+      <Route path="/success" element={<SuccessPage />} />
 
       {/* Protected routes */}
       <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
