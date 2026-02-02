@@ -138,6 +138,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "leases_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants_public"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "leases_unit_id_fkey"
             columns: ["unit_id"]
             isOneToOne: false
@@ -469,13 +476,53 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      tenants_public: {
+        Row: {
+          created_at: string | null
+          email: string | null
+          first_name: string | null
+          id: string | null
+          last_name: string | null
+          phone: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email?: string | null
+          first_name?: string | null
+          id?: string | null
+          last_name?: string | null
+          phone?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string | null
+          first_name?: string | null
+          id?: string | null
+          last_name?: string | null
+          phone?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       get_building_owner: { Args: { building_id: string }; Returns: string }
       get_operating_cost_owner: {
         Args: { operating_cost_id: string }
         Returns: string
+      }
+      get_tenant_banking_info: {
+        Args: { tenant_id: string }
+        Returns: {
+          bic: string
+          iban: string
+          id: string
+        }[]
       }
       get_unit_owner: { Args: { unit_id: string }; Returns: string }
       has_role: {

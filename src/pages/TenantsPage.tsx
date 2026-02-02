@@ -30,15 +30,17 @@ export default function TenantsPage() {
   });
 
   const fetchTenants = async () => {
+    // Use the secure view that excludes banking information (IBAN/BIC)
     const { data, error } = await supabase
-      .from('tenants')
+      .from('tenants_public')
       .select('*')
       .order('last_name');
 
     if (error) {
       toast({ title: 'Fehler', description: error.message, variant: 'destructive' });
     } else {
-      setTenants(data || []);
+      // Map to Tenant type with empty banking fields for list display
+      setTenants((data || []).map(t => ({ ...t, iban: '', bic: '' })));
     }
     setLoading(false);
   };
@@ -52,16 +54,22 @@ export default function TenantsPage() {
     setEditingTenant(null);
   };
 
-  const openDialog = (tenant?: Tenant) => {
+  const openDialog = async (tenant?: Tenant) => {
     if (tenant) {
       setEditingTenant(tenant);
+      // Fetch banking info separately using the secure function
+      const { data: bankingData } = await supabase
+        .rpc('get_tenant_banking_info', { tenant_id: tenant.id });
+      
+      const banking = bankingData?.[0] || { iban: null, bic: null };
+      
       setFormData({
         first_name: tenant.first_name,
         last_name: tenant.last_name,
         email: tenant.email || '',
         phone: tenant.phone || '',
-        iban: tenant.iban || '',
-        bic: tenant.bic || '',
+        iban: banking.iban || '',
+        bic: banking.bic || '',
       });
     } else {
       resetForm();
