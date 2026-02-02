@@ -29,8 +29,8 @@ export const PLANS = {
     name: 'Basic',
     price_monthly: 9.99,
     price_yearly: 95.90,
-    price_id_monthly: 'price_1Sr56K52lqSgjCzeqfCfOudX',
-    price_id_yearly: 'price_1Sr56K52lqSgjCzeqfCfOudX',
+    price_id_monthly: 'price_1StYO152lqSgjCze6P1GfT2G',
+    price_id_yearly: 'price_1StYO152lqSgjCze6P1GfT2G',
     features: [
       'Bis zu 5 Gebäude',
       'Bis zu 20 Einheiten',
@@ -44,8 +44,8 @@ export const PLANS = {
     name: 'Pro',
     price_monthly: 24.99,
     price_yearly: 239.90,
-    price_id_monthly: 'price_1Sr56o52lqSgjCzeRuGrant2',
-    price_id_yearly: 'price_1Sr56o52lqSgjCzeRuGrant2',
+    price_id_monthly: 'price_1StYOT52lqSgjCzeN0V0dLpA',
+    price_id_yearly: 'price_1StYOT52lqSgjCzeN0V0dLpA',
     features: [
       'Unbegrenzte Gebäude',
       'Unbegrenzte Einheiten',
