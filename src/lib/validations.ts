@@ -155,3 +155,92 @@ export const profileSchema = z.object({
 export const formatValidationErrors = (error: z.ZodError): string => {
   return error.errors.map((e) => e.message).join(' ');
 };
+
+// Operating cost item validation schema
+const VALID_COST_TYPES = [
+  'public_charges', 'water_supply', 'sewage', 'heating_central', 'hot_water_central',
+  'elevator', 'street_cleaning_waste', 'building_cleaning', 'garden_maintenance',
+  'lighting', 'chimney_cleaning', 'insurance', 'caretaker', 'antenna_cable',
+  'laundry_facilities', 'other_operating_costs', 'reserve'
+] as const;
+
+const VALID_ALLOCATION_KEYS = ['area', 'persons', 'units', 'consumption', 'direct'] as const;
+
+export const operatingCostItemSchema = z.object({
+  operating_cost_id: z.string().uuid('Ungültige Betriebskosten-ID.'),
+  cost_type: z.enum(VALID_COST_TYPES, {
+    errorMap: () => ({ message: 'Ungültiger Kostentyp.' })
+  }),
+  amount: z
+    .number()
+    .min(0, 'Betrag darf nicht negativ sein.')
+    .max(1000000, 'Betrag ist zu hoch.'),
+  allocation_key: z.enum(VALID_ALLOCATION_KEYS, {
+    errorMap: () => ({ message: 'Ungültiger Umlageschlüssel.' })
+  }),
+});
+
+// Direct cost validation schema
+export const directCostSchema = z.object({
+  operating_cost_id: z.string().uuid('Ungültige Betriebskosten-ID.'),
+  lease_id: z.string().uuid('Ungültige Mietvertrags-ID.'),
+  description: z
+    .string()
+    .min(1, 'Beschreibung ist erforderlich.')
+    .max(500, 'Beschreibung darf maximal 500 Zeichen lang sein.'),
+  amount: z
+    .number()
+    .min(0, 'Betrag darf nicht negativ sein.')
+    .max(1000000, 'Betrag ist zu hoch.'),
+});
+
+// Meter reading validation schema
+export const meterReadingSchema = z.object({
+  operating_cost_id: z.string().uuid('Ungültige Betriebskosten-ID.'),
+  unit_id: z.string().uuid('Ungültige Einheits-ID.'),
+  reading_start: z
+    .number()
+    .min(0, 'Anfangsstand darf nicht negativ sein.')
+    .max(99999999, 'Anfangsstand ist zu hoch.'),
+  reading_end: z
+    .number()
+    .min(0, 'Endstand darf nicht negativ sein.')
+    .max(99999999, 'Endstand ist zu hoch.'),
+}).refine(
+  (data) => data.reading_end >= data.reading_start,
+  { message: 'Endstand muss größer oder gleich dem Anfangsstand sein.', path: ['reading_end'] }
+);
+
+// Validation helper functions for wizard data
+export const validateOperatingCostItems = (items: unknown[]): { valid: boolean; errors: string[] } => {
+  const errors: string[] = [];
+  for (let i = 0; i < items.length; i++) {
+    const result = operatingCostItemSchema.safeParse(items[i]);
+    if (!result.success) {
+      errors.push(`Kostenposition ${i + 1}: ${formatValidationErrors(result.error)}`);
+    }
+  }
+  return { valid: errors.length === 0, errors };
+};
+
+export const validateDirectCosts = (costs: unknown[]): { valid: boolean; errors: string[] } => {
+  const errors: string[] = [];
+  for (let i = 0; i < costs.length; i++) {
+    const result = directCostSchema.safeParse(costs[i]);
+    if (!result.success) {
+      errors.push(`Direktkosten ${i + 1}: ${formatValidationErrors(result.error)}`);
+    }
+  }
+  return { valid: errors.length === 0, errors };
+};
+
+export const validateMeterReadings = (readings: unknown[]): { valid: boolean; errors: string[] } => {
+  const errors: string[] = [];
+  for (let i = 0; i < readings.length; i++) {
+    const result = meterReadingSchema.safeParse(readings[i]);
+    if (!result.success) {
+      errors.push(`Zählerstand ${i + 1}: ${formatValidationErrors(result.error)}`);
+    }
+  }
+  return { valid: errors.length === 0, errors };
+};

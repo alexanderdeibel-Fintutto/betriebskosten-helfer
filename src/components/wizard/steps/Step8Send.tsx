@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Label } from '@/components/ui/label';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useToast } from '@/hooks/use-toast';
 import { Send, Mail, Download, Loader2 } from 'lucide-react';
 import type { Lease, WizardData } from '@/types/database';
+import { validateOperatingCostItems, validateDirectCosts, validateMeterReadings } from '@/lib/validations';
 
 interface Step8Props {
   data: WizardData;
@@ -33,48 +33,85 @@ export function Step8Send({ data, leases, operatingCostId, onComplete }: Step8Pr
     setSending(true);
 
     try {
+      // Prepare cost items for validation
+      const costItemsToSave = data.costItems
+        .filter((item) => (item.amount || 0) > 0)
+        .map((item) => ({
+          operating_cost_id: operatingCostId,
+          cost_type: item.cost_type,
+          amount: item.amount || 0,
+          allocation_key: item.allocation_key,
+        }));
+
+      // Prepare direct costs for validation
+      const directCostsToSave = data.directCosts.map((dc) => ({
+        operating_cost_id: operatingCostId,
+        lease_id: dc.lease_id,
+        description: dc.description || '',
+        amount: dc.amount || 0,
+      }));
+
+      // Prepare meter readings for validation
+      const meterReadingsToSave = data.meterReadings
+        .filter((r) => r.unit_id)
+        .map((r) => ({
+          operating_cost_id: operatingCostId,
+          unit_id: r.unit_id!,
+          reading_start: r.reading_start || 0,
+          reading_end: r.reading_end || 0,
+        }));
+
+      // Validate all data before saving
+      const costItemsValidation = validateOperatingCostItems(costItemsToSave);
+      if (!costItemsValidation.valid) {
+        toast({
+          title: 'Validierungsfehler',
+          description: costItemsValidation.errors.join(' '),
+          variant: 'destructive',
+        });
+        setSending(false);
+        return;
+      }
+
+      const directCostsValidation = validateDirectCosts(directCostsToSave);
+      if (!directCostsValidation.valid) {
+        toast({
+          title: 'Validierungsfehler',
+          description: directCostsValidation.errors.join(' '),
+          variant: 'destructive',
+        });
+        setSending(false);
+        return;
+      }
+
+      const meterReadingsValidation = validateMeterReadings(meterReadingsToSave);
+      if (!meterReadingsValidation.valid) {
+        toast({
+          title: 'Validierungsfehler',
+          description: meterReadingsValidation.errors.join(' '),
+          variant: 'destructive',
+        });
+        setSending(false);
+        return;
+      }
+
       // Update operating cost status
       await supabase
         .from('operating_costs')
         .update({ status: 'sent' })
         .eq('id', operatingCostId);
 
-      // Save cost items
-      const costItemsToSave = data.costItems
-        .filter((item) => (item.amount || 0) > 0)
-        .map((item) => ({
-          operating_cost_id: operatingCostId,
-          cost_type: item.cost_type,
-          amount: item.amount,
-          allocation_key: item.allocation_key,
-        }));
-
+      // Save validated cost items
       if (costItemsToSave.length > 0) {
         await supabase.from('operating_cost_items').insert(costItemsToSave);
       }
 
-      // Save direct costs
-      const directCostsToSave = data.directCosts.map((dc) => ({
-        operating_cost_id: operatingCostId,
-        lease_id: dc.lease_id,
-        description: dc.description,
-        amount: dc.amount,
-      }));
-
+      // Save validated direct costs
       if (directCostsToSave.length > 0) {
         await supabase.from('direct_costs').insert(directCostsToSave);
       }
 
-      // Save meter readings
-      const meterReadingsToSave = data.meterReadings
-        .filter((r) => r.unit_id)
-        .map((r) => ({
-          operating_cost_id: operatingCostId,
-          unit_id: r.unit_id,
-          reading_start: r.reading_start,
-          reading_end: r.reading_end,
-        }));
-
+      // Save validated meter readings
       if (meterReadingsToSave.length > 0) {
         await supabase.from('meter_readings').insert(meterReadingsToSave);
       }
