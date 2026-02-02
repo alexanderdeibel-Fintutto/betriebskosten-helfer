@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { supabase } from '@/integrations/supabase/client';
@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Settings } from 'lucide-react';
-import { useEffect } from 'react';
+import { profileSchema, formatValidationErrors } from '@/lib/validations';
 
 export default function SettingsPage() {
   const { user } = useAuth();
@@ -46,14 +46,26 @@ export default function SettingsPage() {
 
   const handleSave = async () => {
     if (!user) return;
+
+    // Validate form data
+    const validation = profileSchema.safeParse(profile);
+    if (!validation.success) {
+      toast({ 
+        title: 'Validierungsfehler', 
+        description: formatValidationErrors(validation.error), 
+        variant: 'destructive' 
+      });
+      return;
+    }
+
     setSaving(true);
 
     const { error } = await supabase
       .from('profiles')
       .update({
-        company_name: profile.company_name || null,
-        address: profile.address || null,
-        phone: profile.phone || null,
+        company_name: profile.company_name?.trim() || null,
+        address: profile.address?.trim() || null,
+        phone: profile.phone?.trim() || null,
       })
       .eq('user_id', user.id);
 

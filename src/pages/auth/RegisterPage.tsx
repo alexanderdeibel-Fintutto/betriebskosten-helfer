@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, CheckCircle } from 'lucide-react';
+import { validatePassword } from '@/lib/validations';
 
 export default function RegisterPage() {
   const [email, setEmail] = useState('');
@@ -29,10 +30,12 @@ export default function RegisterPage() {
       return;
     }
 
-    if (password.length < 6) {
+    // Strong password validation
+    const passwordValidation = validatePassword(password);
+    if (!passwordValidation.valid) {
       toast({
         title: 'Fehler',
-        description: 'Das Passwort muss mindestens 6 Zeichen lang sein.',
+        description: passwordValidation.error,
         variant: 'destructive',
       });
       return;
@@ -114,10 +117,10 @@ export default function RegisterPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                minLength={6}
+                minLength={8}
               />
               <p className="text-xs text-muted-foreground">
-                Mindestens 6 Zeichen
+                Mindestens 8 Zeichen mit Groß-, Kleinbuchstaben und Zahlen
               </p>
             </div>
             <div className="space-y-2">

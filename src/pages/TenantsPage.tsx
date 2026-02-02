@@ -11,6 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useToast } from '@/hooks/use-toast';
 import { Plus, Pencil, Trash2, Users, Loader2 } from 'lucide-react';
 import type { Tenant } from '@/types/database';
+import { tenantSchema, formatValidationErrors } from '@/lib/validations';
 
 export default function TenantsPage() {
   const { user } = useAuth();
@@ -20,6 +21,7 @@ export default function TenantsPage() {
   const [saving, setSaving] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingTenant, setEditingTenant] = useState<Tenant | null>(null);
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
@@ -52,6 +54,7 @@ export default function TenantsPage() {
   const resetForm = () => {
     setFormData({ first_name: '', last_name: '', email: '', phone: '', iban: '', bic: '' });
     setEditingTenant(null);
+    setFormErrors({});
   };
 
   const openDialog = async (tenant?: Tenant) => {
@@ -79,15 +82,35 @@ export default function TenantsPage() {
 
   const handleSave = async () => {
     if (!user) return;
+    setFormErrors({});
+
+    // Validate form data
+    const validation = tenantSchema.safeParse(formData);
+    if (!validation.success) {
+      const errors: Record<string, string> = {};
+      validation.error.errors.forEach((err) => {
+        if (err.path[0]) {
+          errors[err.path[0].toString()] = err.message;
+        }
+      });
+      setFormErrors(errors);
+      toast({ 
+        title: 'Validierungsfehler', 
+        description: formatValidationErrors(validation.error), 
+        variant: 'destructive' 
+      });
+      return;
+    }
+
     setSaving(true);
 
     const tenantData = {
-      first_name: formData.first_name,
-      last_name: formData.last_name,
-      email: formData.email || null,
-      phone: formData.phone || null,
-      iban: formData.iban || null,
-      bic: formData.bic || null,
+      first_name: formData.first_name.trim(),
+      last_name: formData.last_name.trim(),
+      email: formData.email?.trim() || null,
+      phone: formData.phone?.trim() || null,
+      iban: formData.iban?.toUpperCase().replace(/\s/g, '') || null,
+      bic: formData.bic?.toUpperCase().replace(/\s/g, '') || null,
       user_id: user.id,
     };
 
