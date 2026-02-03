@@ -16,8 +16,8 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    /* Primary: #F97316 (Orange) */
-    --primary: 24.6 95% 53.1%;
+    /* Primary: #c2410c (Darker Orange - WCAG AA compliant with white text) */
+    --primary: 21 90% 40%;
     --primary-foreground: 0 0% 100%;
 
     /* Secondary: #4F46E5 (Indigo) */
@@ -45,21 +45,21 @@
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 24.6 95% 53.1%;
+    --ring: 21 90% 40%;
 
     --radius: 0.75rem;
 
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 222.2 84% 4.9%;
-    --sidebar-primary: 24.6 95% 53.1%;
+    --sidebar-primary: 21 90% 40%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 243.4 75.4% 58.6%;
     --sidebar-accent-foreground: 0 0% 100%;
     --sidebar-border: 214.3 31.8% 91.4%;
-    --sidebar-ring: 24.6 95% 53.1%;
+    --sidebar-ring: 21 90% 40%;
 
     /* Wizard stepper */
-    --stepper-active: 24.6 95% 53.1%;
+    --stepper-active: 21 90% 40%;
     --stepper-completed: 160.1 84.1% 39.4%;
     --stepper-pending: 214.3 31.8% 91.4%;
   }
@@ -74,7 +74,7 @@
     --popover: 222.2 84% 8%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 24.6 95% 53.1%;
+    --primary: 21 90% 40%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 243.4 75.4% 58.6%;
@@ -97,18 +97,18 @@
 
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 24.6 95% 53.1%;
+    --ring: 21 90% 40%;
 
     --sidebar-background: 222.2 84% 4.9%;
     --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 24.6 95% 53.1%;
+    --sidebar-primary: 21 90% 40%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 243.4 75.4% 58.6%;
     --sidebar-accent-foreground: 0 0% 100%;
     --sidebar-border: 217.2 32.6% 17.5%;
-    --sidebar-ring: 24.6 95% 53.1%;
+    --sidebar-ring: 21 90% 40%;
 
-    --stepper-active: 24.6 95% 53.1%;
+    --stepper-active: 21 90% 40%;
     --stepper-completed: 160.1 84.1% 39.4%;
     --stepper-pending: 217.2 32.6% 17.5%;
   }
