@@ -1,3 +1,4 @@
+import { Suspense, lazy } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -5,23 +6,28 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 
-// Auth pages
-import LoginPage from "./pages/auth/LoginPage";
-import RegisterPage from "./pages/auth/RegisterPage";
-import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage";
+// Lazy loaded pages for code splitting
+const LoginPage = lazy(() => import("./pages/auth/LoginPage"));
+const RegisterPage = lazy(() => import("./pages/auth/RegisterPage"));
+const ForgotPasswordPage = lazy(() => import("./pages/auth/ForgotPasswordPage"));
+const DashboardPage = lazy(() => import("./pages/DashboardPage"));
+const BuildingsPage = lazy(() => import("./pages/BuildingsPage"));
+const UnitsPage = lazy(() => import("./pages/UnitsPage"));
+const TenantsPage = lazy(() => import("./pages/TenantsPage"));
+const LeasesPage = lazy(() => import("./pages/LeasesPage"));
+const BillingsPage = lazy(() => import("./pages/BillingsPage"));
+const NewBillingPage = lazy(() => import("./pages/NewBillingPage"));
+const SettingsPage = lazy(() => import("./pages/SettingsPage"));
+const PricingPage = lazy(() => import("./pages/PricingPage"));
+const SuccessPage = lazy(() => import("./pages/SuccessPage"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
-// App pages
-import DashboardPage from "./pages/DashboardPage";
-import BuildingsPage from "./pages/BuildingsPage";
-import UnitsPage from "./pages/UnitsPage";
-import TenantsPage from "./pages/TenantsPage";
-import LeasesPage from "./pages/LeasesPage";
-import BillingsPage from "./pages/BillingsPage";
-import NewBillingPage from "./pages/NewBillingPage";
-import SettingsPage from "./pages/SettingsPage";
-import PricingPage from "./pages/PricingPage";
-import SuccessPage from "./pages/SuccessPage";
-import NotFound from "./pages/NotFound";
+// Loading fallback component
+const PageLoader = () => (
+  <div className="min-h-screen flex items-center justify-center">
+    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+  </div>
+);
 
 const queryClient = new QueryClient();
 
@@ -63,29 +69,31 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 
 function AppRoutes() {
   return (
-    <Routes>
-      {/* Public routes */}
-      <Route path="/" element={<Navigate to="/login" replace />} />
-      <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
-      <Route path="/register" element={<PublicRoute><RegisterPage /></PublicRoute>} />
-      <Route path="/forgot-password" element={<PublicRoute><ForgotPasswordPage /></PublicRoute>} />
-      <Route path="/pricing" element={<PricingPage />} />
-      <Route path="/success" element={<SuccessPage />} />
+    <Suspense fallback={<PageLoader />}>
+      <Routes>
+        {/* Public routes */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
+        <Route path="/register" element={<PublicRoute><RegisterPage /></PublicRoute>} />
+        <Route path="/forgot-password" element={<PublicRoute><ForgotPasswordPage /></PublicRoute>} />
+        <Route path="/pricing" element={<PricingPage />} />
+        <Route path="/success" element={<SuccessPage />} />
 
-      {/* Protected routes */}
-      <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
-      <Route path="/gebaeude" element={<ProtectedRoute><BuildingsPage /></ProtectedRoute>} />
-      <Route path="/gebaeude/:buildingId/einheiten" element={<ProtectedRoute><UnitsPage /></ProtectedRoute>} />
-      <Route path="/mieter" element={<ProtectedRoute><TenantsPage /></ProtectedRoute>} />
-      <Route path="/mietvertraege" element={<ProtectedRoute><LeasesPage /></ProtectedRoute>} />
-      <Route path="/abrechnungen" element={<ProtectedRoute><BillingsPage /></ProtectedRoute>} />
-      <Route path="/abrechnungen/neu" element={<ProtectedRoute><NewBillingPage /></ProtectedRoute>} />
-      <Route path="/abrechnungen/:id" element={<ProtectedRoute><NewBillingPage /></ProtectedRoute>} />
-      <Route path="/einstellungen" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
+        {/* Protected routes */}
+        <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+        <Route path="/gebaeude" element={<ProtectedRoute><BuildingsPage /></ProtectedRoute>} />
+        <Route path="/gebaeude/:buildingId/einheiten" element={<ProtectedRoute><UnitsPage /></ProtectedRoute>} />
+        <Route path="/mieter" element={<ProtectedRoute><TenantsPage /></ProtectedRoute>} />
+        <Route path="/mietvertraege" element={<ProtectedRoute><LeasesPage /></ProtectedRoute>} />
+        <Route path="/abrechnungen" element={<ProtectedRoute><BillingsPage /></ProtectedRoute>} />
+        <Route path="/abrechnungen/neu" element={<ProtectedRoute><NewBillingPage /></ProtectedRoute>} />
+        <Route path="/abrechnungen/:id" element={<ProtectedRoute><NewBillingPage /></ProtectedRoute>} />
+        <Route path="/einstellungen" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
 
-      {/* Catch-all */}
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+        {/* Catch-all */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Suspense>
   );
 }
 
