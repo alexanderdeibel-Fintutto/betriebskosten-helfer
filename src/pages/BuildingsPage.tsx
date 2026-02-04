@@ -5,14 +5,12 @@ import { useAuth } from '@/contexts/AuthContext';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useToast } from '@/hooks/use-toast';
-import { Plus, Pencil, Trash2, Building2, Loader2, Home } from 'lucide-react';
+import { Plus, Pencil, Trash2, Building2, Home } from 'lucide-react';
 import type { Building } from '@/types/database';
 import { buildingSchema, formatValidationErrors } from '@/lib/validations';
+import { BuildingFormDialog } from '@/components/buildings/BuildingFormDialog';
 
 export default function BuildingsPage() {
   const { user } = useAuth();
@@ -22,14 +20,6 @@ export default function BuildingsPage() {
   const [saving, setSaving] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingBuilding, setEditingBuilding] = useState<Building | null>(null);
-  const [formData, setFormData] = useState({
-    name: '',
-    street: '',
-    house_number: '',
-    postal_code: '',
-    city: '',
-    total_area: '',
-  });
 
   const fetchBuildings = async () => {
     const { data, error } = await supabase
@@ -49,42 +39,22 @@ export default function BuildingsPage() {
     if (user) fetchBuildings();
   }, [user]);
 
-  const resetForm = () => {
-    setFormData({ name: '', street: '', house_number: '', postal_code: '', city: '', total_area: '' });
-    setEditingBuilding(null);
-  };
-
   const openDialog = (building?: Building) => {
-    if (building) {
-      setEditingBuilding(building);
-      setFormData({
-        name: building.name,
-        street: building.street,
-        house_number: building.house_number,
-        postal_code: building.postal_code,
-        city: building.city,
-        total_area: building.total_area.toString(),
-      });
-    } else {
-      resetForm();
-    }
+    setEditingBuilding(building || null);
     setDialogOpen(true);
   };
 
-  const handleSave = async () => {
+  const handleSave = async (formData: {
+    name: string;
+    street: string;
+    house_number: string;
+    postal_code: string;
+    city: string;
+    total_area: number;
+  }) => {
     if (!user) return;
-    
-    // Validate form data using the building schema
-    const validationData = {
-      name: formData.name.trim(),
-      street: formData.street.trim(),
-      house_number: formData.house_number.trim(),
-      postal_code: formData.postal_code.trim(),
-      city: formData.city.trim(),
-      total_area: parseFloat(formData.total_area) || 0,
-    };
 
-    const validation = buildingSchema.safeParse(validationData);
+    const validation = buildingSchema.safeParse(formData);
     
     if (!validation.success) {
       toast({ 
@@ -126,7 +96,7 @@ export default function BuildingsPage() {
     } else {
       toast({ title: 'Erfolg', description: editingBuilding ? 'Gebäude aktualisiert.' : 'Gebäude erstellt.' });
       setDialogOpen(false);
-      resetForm();
+      setEditingBuilding(null);
       fetchBuildings();
     }
     setSaving(false);
@@ -153,92 +123,19 @@ export default function BuildingsPage() {
             <h1 className="text-3xl font-bold">Gebäude</h1>
             <p className="text-muted-foreground">Verwalten Sie Ihre Immobilien</p>
           </div>
-          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-            <DialogTrigger asChild>
-              <Button onClick={() => openDialog()}>
-                <Plus className="mr-2 h-4 w-4" />
-                Neues Gebäude
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>{editingBuilding ? 'Gebäude bearbeiten' : 'Neues Gebäude'}</DialogTitle>
-                <DialogDescription>
-                  Geben Sie die Gebäudedaten ein.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="space-y-4 py-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Bezeichnung</Label>
-                  <Input
-                    id="name"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="z.B. Musterhaus 1"
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="street">Straße</Label>
-                    <Input
-                      id="street"
-                      value={formData.street}
-                      onChange={(e) => setFormData({ ...formData, street: e.target.value })}
-                      placeholder="Musterstraße"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="house_number">Hausnummer</Label>
-                    <Input
-                      id="house_number"
-                      value={formData.house_number}
-                      onChange={(e) => setFormData({ ...formData, house_number: e.target.value })}
-                      placeholder="1a"
-                    />
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="postal_code">PLZ</Label>
-                    <Input
-                      id="postal_code"
-                      value={formData.postal_code}
-                      onChange={(e) => setFormData({ ...formData, postal_code: e.target.value })}
-                      placeholder="12345"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="city">Stadt</Label>
-                    <Input
-                      id="city"
-                      value={formData.city}
-                      onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                      placeholder="Musterstadt"
-                    />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="total_area">Gesamtfläche (m²)</Label>
-                  <Input
-                    id="total_area"
-                    type="number"
-                    step="0.01"
-                    value={formData.total_area}
-                    onChange={(e) => setFormData({ ...formData, total_area: e.target.value })}
-                    placeholder="500.00"
-                  />
-                </div>
-              </div>
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setDialogOpen(false)}>Abbrechen</Button>
-                <Button onClick={handleSave} disabled={saving}>
-                  {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  {editingBuilding ? 'Speichern' : 'Erstellen'}
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+          <Button onClick={() => openDialog()}>
+            <Plus className="mr-2 h-4 w-4" />
+            Neues Gebäude
+          </Button>
         </div>
+
+        <BuildingFormDialog
+          open={dialogOpen}
+          onOpenChange={setDialogOpen}
+          building={editingBuilding}
+          onSave={handleSave}
+          saving={saving}
+        />
 
         <Card>
           <CardHeader>
