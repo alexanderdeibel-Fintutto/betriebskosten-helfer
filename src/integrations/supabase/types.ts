@@ -14,6 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_cross_sell_triggers: {
+        Row: {
+          created_at: string
+          cta_text: string
+          cta_url: string | null
+          description: string
+          headline: string
+          id: string
+          is_active: boolean
+          priority: number
+          source_app_id: string
+          target_app_id: string
+          trigger_condition: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          cta_text?: string
+          cta_url?: string | null
+          description: string
+          headline: string
+          id?: string
+          is_active?: boolean
+          priority?: number
+          source_app_id: string
+          target_app_id: string
+          trigger_condition?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          cta_text?: string
+          cta_url?: string | null
+          description?: string
+          headline?: string
+          id?: string
+          is_active?: boolean
+          priority?: number
+          source_app_id?: string
+          target_app_id?: string
+          trigger_condition?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       buildings: {
         Row: {
           city: string
@@ -520,6 +565,48 @@ export type Database = {
           subscription_plan?: string | null
           type?: string | null
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      products: {
+        Row: {
+          app_id: string
+          created_at: string
+          currency: string
+          description: string | null
+          features: Json | null
+          id: string
+          is_active: boolean
+          name: string
+          price_monthly: number
+          price_yearly: number
+          updated_at: string
+        }
+        Insert: {
+          app_id: string
+          created_at?: string
+          currency?: string
+          description?: string | null
+          features?: Json | null
+          id?: string
+          is_active?: boolean
+          name: string
+          price_monthly?: number
+          price_yearly?: number
+          updated_at?: string
+        }
+        Update: {
+          app_id?: string
+          created_at?: string
+          currency?: string
+          description?: string | null
+          features?: Json | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          price_monthly?: number
+          price_yearly?: number
+          updated_at?: string
         }
         Relationships: []
       }
