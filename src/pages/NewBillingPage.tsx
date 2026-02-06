@@ -41,6 +41,7 @@ export default function NewBillingPage() {
   const [wizardData, setWizardData] = useState<WizardData>({
     selectedLeaseIds: [],
     costItems: [],
+    customCostItems: [],
     directCosts: [],
     heatingTotal: 0,
     heatingAreaPercentage: 30,

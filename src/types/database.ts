@@ -19,7 +19,8 @@ export type CostType =
   | 'antenna_cable'
   | 'laundry_facilities'
   | 'other_operating_costs'
-  | 'reserve';
+  | 'reserve'
+  | 'custom'; // New: for custom categories
 
 export type OperatingCostStatus = 'draft' | 'calculated' | 'sent' | 'completed';
 
@@ -41,6 +42,7 @@ export const COST_TYPE_LABELS: Record<CostType, string> = {
   laundry_facilities: '15. Wascheinrichtungen',
   other_operating_costs: '16. Sonstige Betriebskosten',
   reserve: '17. Reserve',
+  custom: 'Benutzerdefiniert',
 };
 
 export const ALLOCATION_KEY_LABELS: Record<AllocationKey, string> = {
@@ -126,6 +128,16 @@ export interface OperatingCost {
   building?: Building;
 }
 
+export interface CostItemReceipt {
+  id?: string;
+  operating_cost_item_id?: string;
+  description?: string;
+  amount: number;
+  receipt_date?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
 export interface OperatingCostItem {
   id: string;
   operating_cost_id: string;
@@ -133,6 +145,9 @@ export interface OperatingCostItem {
   amount: number;
   allocation_key: AllocationKey;
   description?: string;
+  custom_label?: string;
+  is_custom_category?: boolean;
+  receipts?: CostItemReceipt[];
   created_at: string;
 }
 
@@ -171,12 +186,25 @@ export interface OperatingCostResult {
   lease?: Lease;
 }
 
+export interface OperatingCostVersion {
+  id: string;
+  operating_cost_id: string;
+  version_number: number;
+  total_costs: number;
+  total_prepayments: number;
+  changed_by?: string;
+  change_summary?: string;
+  snapshot_data?: unknown;
+  created_at: string;
+}
+
 export interface WizardData {
   buildingId?: string;
   periodStart?: string;
   periodEnd?: string;
   selectedLeaseIds: string[];
   costItems: Partial<OperatingCostItem>[];
+  customCostItems: Partial<OperatingCostItem>[];
   directCosts: Partial<DirectCost>[];
   heatingTotal: number;
   heatingAreaPercentage: number;
