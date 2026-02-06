@@ -98,6 +98,44 @@ export type Database = {
         }
         Relationships: []
       }
+      cost_item_receipts: {
+        Row: {
+          amount: number
+          created_at: string
+          description: string | null
+          id: string
+          operating_cost_item_id: string
+          receipt_date: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          operating_cost_item_id: string
+          receipt_date?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          operating_cost_item_id?: string
+          receipt_date?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cost_item_receipts_operating_cost_item_id_fkey"
+            columns: ["operating_cost_item_id"]
+            isOneToOne: false
+            referencedRelation: "operating_cost_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       direct_costs: {
         Row: {
           amount: number
@@ -402,8 +440,10 @@ export type Database = {
           amount: number
           cost_type: Database["public"]["Enums"]["cost_type"]
           created_at: string
+          custom_label: string | null
           description: string | null
           id: string
+          is_custom_category: boolean | null
           operating_cost_id: string
         }
         Insert: {
@@ -411,8 +451,10 @@ export type Database = {
           amount?: number
           cost_type: Database["public"]["Enums"]["cost_type"]
           created_at?: string
+          custom_label?: string | null
           description?: string | null
           id?: string
+          is_custom_category?: boolean | null
           operating_cost_id: string
         }
         Update: {
@@ -420,8 +462,10 @@ export type Database = {
           amount?: number
           cost_type?: Database["public"]["Enums"]["cost_type"]
           created_at?: string
+          custom_label?: string | null
           description?: string | null
           id?: string
+          is_custom_category?: boolean | null
           operating_cost_id?: string
         }
         Relationships: [
@@ -484,6 +528,50 @@ export type Database = {
           },
           {
             foreignKeyName: "operating_cost_results_operating_cost_id_fkey"
+            columns: ["operating_cost_id"]
+            isOneToOne: false
+            referencedRelation: "operating_costs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      operating_cost_versions: {
+        Row: {
+          change_summary: string | null
+          changed_by: string | null
+          created_at: string
+          id: string
+          operating_cost_id: string
+          snapshot_data: Json | null
+          total_costs: number
+          total_prepayments: number
+          version_number: number
+        }
+        Insert: {
+          change_summary?: string | null
+          changed_by?: string | null
+          created_at?: string
+          id?: string
+          operating_cost_id: string
+          snapshot_data?: Json | null
+          total_costs?: number
+          total_prepayments?: number
+          version_number?: number
+        }
+        Update: {
+          change_summary?: string | null
+          changed_by?: string | null
+          created_at?: string
+          id?: string
+          operating_cost_id?: string
+          snapshot_data?: Json | null
+          total_costs?: number
+          total_prepayments?: number
+          version_number?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "operating_cost_versions_operating_cost_id_fkey"
             columns: ["operating_cost_id"]
             isOneToOne: false
             referencedRelation: "operating_costs"
