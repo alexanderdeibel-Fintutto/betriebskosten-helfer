@@ -14,7 +14,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         <AppSidebar />
         <SidebarInset className="flex-1">
           <CrossMarketingBanner />
-          <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b bg-background px-4">
+          <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b border-border/50 bg-card/80 backdrop-blur-sm px-4">
             <SidebarTrigger />
           </header>
           <main className="flex-1 p-6">

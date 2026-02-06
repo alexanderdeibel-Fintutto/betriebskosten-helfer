@@ -7,14 +7,14 @@
 
 @layer base {
   :root {
-    --background: 0 0% 98%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 270 40% 12%;
+    --foreground: 270 20% 95%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 270 30% 16%;
+    --card-foreground: 270 20% 95%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 270 30% 16%;
+    --popover-foreground: 270 20% 95%;
 
     /* Primary: #c2410c (Darker Orange - WCAG AA compliant with white text) */
     --primary: 21 90% 40%;
@@ -24,8 +24,8 @@
     --secondary: 243.4 75.4% 58.6%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 270 20% 20%;
+    --muted-foreground: 270 15% 65%;
 
     /* Accent: #4F46E5 (Indigo) */
     --accent: 243.4 75.4% 58.6%;
@@ -43,36 +43,36 @@
     --warning: 37.7 92.1% 50.2%;
     --warning-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
+    --border: 270 20% 25%;
+    --input: 270 20% 25%;
     --ring: 21 90% 40%;
 
     --radius: 0.75rem;
 
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 222.2 84% 4.9%;
+    --sidebar-background: 270 30% 14%;
+    --sidebar-foreground: 270 20% 95%;
     --sidebar-primary: 21 90% 40%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 243.4 75.4% 58.6%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 214.3 31.8% 91.4%;
+    --sidebar-border: 270 20% 25%;
     --sidebar-ring: 21 90% 40%;
 
     /* Wizard stepper */
     --stepper-active: 21 90% 40%;
     --stepper-completed: 160.1 84.1% 39.4%;
-    --stepper-pending: 214.3 31.8% 91.4%;
+    --stepper-pending: 270 20% 25%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 270 40% 8%;
+    --foreground: 270 20% 95%;
 
-    --card: 222.2 84% 8%;
-    --card-foreground: 210 40% 98%;
+    --card: 270 30% 12%;
+    --card-foreground: 270 20% 95%;
 
-    --popover: 222.2 84% 8%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 270 30% 12%;
+    --popover-foreground: 270 20% 95%;
 
     --primary: 21 90% 40%;
     --primary-foreground: 0 0% 100%;
@@ -80,8 +80,8 @@
     --secondary: 243.4 75.4% 58.6%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 270 20% 15%;
+    --muted-foreground: 270 15% 60%;
 
     --accent: 243.4 75.4% 58.6%;
     --accent-foreground: 0 0% 100%;
@@ -90,27 +90,27 @@
     --success-foreground: 0 0% 100%;
 
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 270 20% 95%;
 
     --warning: 37.7 92.1% 50.2%;
     --warning-foreground: 0 0% 100%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
+    --border: 270 20% 20%;
+    --input: 270 20% 20%;
     --ring: 21 90% 40%;
 
-    --sidebar-background: 222.2 84% 4.9%;
-    --sidebar-foreground: 210 40% 98%;
+    --sidebar-background: 270 30% 10%;
+    --sidebar-foreground: 270 20% 95%;
     --sidebar-primary: 21 90% 40%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 243.4 75.4% 58.6%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 217.2 32.6% 17.5%;
+    --sidebar-border: 270 20% 20%;
     --sidebar-ring: 21 90% 40%;
 
     --stepper-active: 21 90% 40%;
     --stepper-completed: 160.1 84.1% 39.4%;
-    --stepper-pending: 217.2 32.6% 17.5%;
+    --stepper-pending: 270 20% 20%;
   }
 }
 
@@ -122,6 +122,11 @@
   body {
     @apply bg-background text-foreground font-sans antialiased;
     font-family: 'Inter', sans-serif;
+    background-image: url('/images/bg-gradient.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
   }
 
   code, pre {
@@ -136,5 +141,11 @@
   
   .text-balance {
     text-wrap: balance;
+  }
+
+  .glass-card {
+    background: hsl(var(--card) / 0.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid hsl(var(--border) / 0.5);
   }
 }
