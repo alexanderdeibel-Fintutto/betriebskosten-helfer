@@ -1,0 +1,16 @@
+<svg width="3840" height="2160" viewBox="0 0 3840 2160" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="peach-horizontal" x1="0%" y1="50%" x2="100%" y2="50%">
+      <stop offset="0%" stop-color="#0f0f1a"/>
+      <stop offset="12%" stop-color="#1a1030"/>
+      <stop offset="25%" stop-color="#2d1850"/>
+      <stop offset="38%" stop-color="#4a2068"/>
+      <stop offset="50%" stop-color="#6a3070"/>
+      <stop offset="62%" stop-color="#8a4068"/>
+      <stop offset="75%" stop-color="#b86060"/>
+      <stop offset="88%" stop-color="#e08070"/>
+      <stop offset="100%" stop-color="#FFB090"/>
+    </linearGradient>
+  </defs>
+  <rect width="3840" height="2160" fill="url(#peach-horizontal)"/>
+</svg>

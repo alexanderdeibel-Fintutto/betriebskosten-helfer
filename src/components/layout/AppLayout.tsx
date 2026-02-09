@@ -14,8 +14,15 @@ export function AppLayout({ children }: AppLayoutProps) {
         <AppSidebar />
         <SidebarInset className="flex-1">
           <CrossMarketingBanner />
-          <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b border-border/30 bg-card/60 backdrop-blur-xl px-4">
-            <SidebarTrigger />
+          <header
+            className="sticky top-0 z-10 flex h-14 items-center gap-4 px-4 text-white"
+            style={{
+              backgroundImage: `url('/images/header-gradient.svg')`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }}
+          >
+            <SidebarTrigger className="text-white/80 hover:text-white hover:bg-white/10" />
           </header>
           <main className="flex-1 p-6">
             {children}
