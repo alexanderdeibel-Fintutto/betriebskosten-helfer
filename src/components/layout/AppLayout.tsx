@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import { SidebarProvider, SidebarTrigger, SidebarInset } from '@/components/ui/sidebar';
 import { AppSidebar } from './AppSidebar';
 import { CrossMarketingBanner } from '@/components/marketing/CrossMarketingBanner';
+import logoHorizontal from '@/assets/logo-horizontal.svg';
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -23,6 +24,7 @@ export function AppLayout({ children }: AppLayoutProps) {
             }}
           >
             <SidebarTrigger className="text-white/80 hover:text-white hover:bg-white/10" />
+            <img src={logoHorizontal} alt="Fintutto Nebenkosten" className="h-8" />
           </header>
           <main className="flex-1 p-6">
             {children}
